@@ -54,7 +54,7 @@ def crypto_daily_o_c(name, date):
 """ ---------------------------------------------------Crypto Listing------------------------------------------------------------------"""
 def crypto_refresh():
     file = open("./data/cryptocurrencies.json")
-    data_json = json.loads(file)
+    data_json = json.loads(file.read())
     data = []
     for key in data_json:
         data.append([key,data_json[key]])
