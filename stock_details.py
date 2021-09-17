@@ -14,7 +14,7 @@ def value():
     if(date_entered<=date_today):
         tickerval = tickerEnter.get()
         dateval = dateEnter.get()
-        data_json = backend.daily_o_c(tickerval,dateval)
+        data_json = backend.daily_o_c(tickerval.upper(),dateval)
         highEnter.configure(text = data_json['high'])
         lowEnter.configure(text = data_json['low'])
         openEnter.configure(text = data_json['open'])
@@ -38,7 +38,7 @@ y_cordinate = int((screen_height/2) - (window_height/2))
 root.geometry("{}x{}+{}+{}".format(window_width, window_height, x_cordinate, y_cordinate))
 
 myFrame = LabelFrame(root,bg="#3b404e", text = "Stock Details",bd=3, fg = "white", padx=5, pady=5, labelanchor = "n")
-myFrame.place(relx = 0.5, rely = 0.5, relwidth = 0.9, relheight = 0.8, anchor = CENTER)
+myFrame.place(relx = 0.5, rely = 0.5, relwidth = 0.9, relheight = 0.9, anchor = CENTER)
 
 ticker = Label(myFrame, text = "Stock Ticker:", relief = RAISED, fg = "white", bg = "#3b404e", bd=0 , font = ("Calibri",12), padx= 20, pady = 20)
 ticker.grid(row = 0, column = 0, padx= 60, pady = 5)
@@ -80,7 +80,8 @@ openEnter.grid(row = 5, column = 1, padx= 80, pady = 5)
 closeEnter = Label(myFrame, text = " " ,highlightbackground= "#3b404e", bg = "#3b404e", borderwidth = 2, fg = "white")
 closeEnter.grid(row = 6, column = 1, padx= 80, pady = 5)
 
-
-
+home = Button(myFrame, text = "Home",  bg = "#3b404e", relief = GROOVE, borderwidth= 2)
+home.grid(row = 7, column = 0, columnspan = 2, padx= 30, pady=20)
+home.config(highlightbackground = "#3b404e", highlightthickness = 2, highlightcolor= "#3b404e")
 
 root.mainloop()
