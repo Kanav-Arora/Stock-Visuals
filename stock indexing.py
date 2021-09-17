@@ -13,6 +13,7 @@ root.resizable(False, False)
 window_height = 600
 window_width = 1000
 
+
 screen_width = root.winfo_screenwidth()
 screen_height = root.winfo_screenheight()
 
