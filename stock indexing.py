@@ -8,7 +8,19 @@ datalist = backend.refresh()
 datalist.pop(0)
 root = Tk()
 root.title('Stock Indexing')
-root.geometry("500x500")
+root.resizable(False, False)
+
+window_height = 600
+window_width = 1000
+
+screen_width = root.winfo_screenwidth()
+screen_height = root.winfo_screenheight()
+
+x_cordinate = int((screen_width/2) - (window_width/2))
+y_cordinate = int((screen_height/2) - (window_height/2))
+
+root.geometry("{}x{}+{}+{}".format(window_width, window_height, x_cordinate, y_cordinate))
+
 
 
 def query_database():
@@ -20,10 +32,10 @@ def query_database():
 
     for i in range(len(datalist)):
         if count % 2 == 0:
-            my_tree.insert(parent='', index='end', iid=count, text='', values=(
+            my_tree.insert(parent='', index='end', iid=count, text='', values=(count,
                 datalist[i][1], datalist[i][0]), tags=('evenrow',))
         else:
-            my_tree.insert(parent='', index='end', iid=count, text='', values=(
+            my_tree.insert(parent='', index='end', iid=count, text='', values=(count,
                 datalist[i][1], datalist[i][0]), tags=('oddrow',))
         count += 1
 
@@ -33,7 +45,19 @@ def lookup_records():
 
     search = Toplevel(root)
     search.title("Lookup Records")
-    search.geometry("400x200")
+    
+    window_height = 180
+    window_width = 400
+
+    screen_width = search.winfo_screenwidth()
+    screen_height = search.winfo_screenheight()
+
+    x_cordinate = int((screen_width/2) - (window_width/2))
+    y_cordinate = int((screen_height/2) - (window_height/2))
+
+    search.geometry("{}x{}+{}+{}".format(window_width, window_height, x_cordinate, y_cordinate))
+
+    
     # search.iconbitmap('c:/gui/codemy.ico')
 
     search_frame = LabelFrame(search, text="Enter the Company Name")
@@ -130,13 +154,15 @@ my_tree.pack()
 
 tree_scroll.config(command=my_tree.yview)
 
-my_tree['columns'] = ("Company Name", "Company Symbol")
+my_tree['columns'] = ("S.no","Company Name", "Company Symbol")
 
-my_tree.column("#0", width=30, stretch=NO)
-my_tree.column("Company Name", anchor=W, width=140)
-my_tree.column("Company Symbol", anchor=W, width=140)
+my_tree.column("#0", width=0, stretch=NO)
+my_tree.column("S.no", anchor=CENTER, width=30)
+my_tree.column("Company Name", anchor=W, width=700)
+my_tree.column("Company Symbol", anchor=W, width=100)
 
 my_tree.heading("#0", text="S.no", anchor=W)
+my_tree.heading("S.no", text="S.no", anchor=W)
 my_tree.heading("Company Name", text="Company Name", anchor=W)
 my_tree.heading("Company Symbol", text="Company Symbol", anchor=W)
 
