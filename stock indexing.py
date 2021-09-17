@@ -13,6 +13,7 @@ root.resizable(False, False)
 window_height = 600
 window_width = 1000
 
+root.iconbitmap('./DSC logo.ico')
 
 screen_width = root.winfo_screenwidth()
 screen_height = root.winfo_screenheight()
@@ -59,7 +60,7 @@ def lookup_records():
     search.geometry("{}x{}+{}+{}".format(window_width, window_height, x_cordinate, y_cordinate))
 
     
-    # search.iconbitmap('c:/gui/codemy.ico')
+    search.iconbitmap('./DSC logo.ico')
 
     search_frame = LabelFrame(search, text="Enter the Company Name")
     search_frame.pack(padx=10, pady=10)
