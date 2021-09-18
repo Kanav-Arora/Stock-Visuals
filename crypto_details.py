@@ -1,7 +1,7 @@
 from tkinter import *
 from tkinter import messagebox
 import tkinter
-from PIL import ImageTk,Image
+#from PIL import ImageTk,Image
 import webbrowser;
 import backend;
 from datetime import datetime
