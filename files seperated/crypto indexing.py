@@ -5,7 +5,8 @@ from tkinter import colorchooser
 import backend
 
 datalist = backend.crypto_refresh()
-datalist.pop(0)
+
+
 root = Tk()
 root.title('Crypto Indexer')
 root.resizable(False, False)
@@ -62,7 +63,7 @@ def lookup_records():
     
     search.iconbitmap('./DSC logo.ico')
 
-    search_frame = LabelFrame(search, text="Enter the Company Name")
+    search_frame = LabelFrame(search, text="Enter the Crypto Name")
     search_frame.pack(padx=10, pady=10)
 
     search_entry = Entry(search_frame, font=("Helvetica", 18))
@@ -156,17 +157,17 @@ my_tree.pack()
 
 tree_scroll.config(command=my_tree.yview)
 
-my_tree['columns'] = ("S.no","Company Name", "Company Symbol")
+my_tree['columns'] = ("S.no","Crypto Name", "Crypto Symbol")
 
 my_tree.column("#0", width=0, stretch=NO)
 my_tree.column("S.no", anchor=CENTER, width=40)
-my_tree.column("Company Name", anchor=W, width=700)
-my_tree.column("Company Symbol", anchor=W, width=100)
+my_tree.column("Crypto Name", anchor=W, width=700)
+my_tree.column("Crypto Symbol", anchor=W, width=100)
 
 my_tree.heading("#0", text="S.no", anchor=W)
 my_tree.heading("S.no", text="S.no", anchor=W)
-my_tree.heading("Company Name", text="Company Name", anchor=W)
-my_tree.heading("Company Symbol", text="Company Symbol", anchor=W)
+my_tree.heading("Crypto Name", text="Crypto Name", anchor=W)
+my_tree.heading("Crypto Symbol", text="Crypto Symbol", anchor=W)
 
 my_tree.tag_configure('oddrow', background="white")
 my_tree.tag_configure('evenrow', background="lightblue")

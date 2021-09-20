@@ -5,7 +5,8 @@ from tkinter import colorchooser
 import backend
 
 datalist = backend.refresh()
-datalist.pop(0)
+
+
 root = Tk()
 root.title('Stock Indexer')
 root.resizable(False, False)
