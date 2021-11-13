@@ -61,3 +61,15 @@ def crypto_refresh():
     return data
 
 """ ----------------------------------------------------------------------------------------------------------------------------------"""
+
+""" ---------------------------------------------------Stocks Aggregate Bars------------------------------------------------------------------"""
+
+def stocks_aggregate(from_date, to_date, ticker):
+    url = test.stocks_aggregate_api(from_date,to_date,ticker)
+    # remove above line and add
+    # url = "https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/day/2020-07-22/2021-07-22?adjusted=true&sort=asc&limit=120&apiKey=<YOUR_API_KEY>"
+    response = urlopen(url)
+    data_json = json.loads(response.read())
+    return data_json
+
+""" ----------------------------------------------------------------------------------------------------------------------------------"""
