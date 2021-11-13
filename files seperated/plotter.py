@@ -4,64 +4,45 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg,
 NavigationToolbar2Tk)
 
+def plot(data):
 
-
-
-
-# plot function is created for
-# plotting the graph in
-# tkinter window
-def plot():
-
-	# the figure that will contain the plot
 	fig = Figure(figsize = (5, 5),
 				dpi = 100)
 
-	# list of squares
-	plotlist1 = [i**2 for i in range(101)]
-
-	# adding the subplot
 	plot1 = fig.add_subplot(111)
 
-	# plotting the graph
-	plot1.plot(plotlist1)
+	plot1.plot(data)
 
-	# creating the Tkinter canvas
-	# containing the Matplotlib figure
 	canvas = FigureCanvasTkAgg(fig,
 							master = window)
 	canvas.draw()
 
-	# placing the canvas on the Tkinter window
 	canvas.get_tk_widget().pack()
 
-	# creating the Matplotlib toolbar
 	toolbar = NavigationToolbar2Tk(canvas,
 								window)
 	toolbar.update()
 
-	# placing the toolbar on the Tkinter window
 	canvas.get_tk_widget().pack()
 
-# the main Tkinter window
 window = Tk()
 
-# setting the title
 window.title('Plotting in Tkinter')
 
-# dimensions of the main window
 window.geometry("500x500")
 
-# button that displays the plot
+data = backend.stocks_aggregate("2020-07-10","2021-07-10","AAPL")
+close_vals = []
+
+for i in data["results"]:
+	close_vals.append(i['c'])
+
 plot_button = Button(master = window,
-					command = plot,
+					command = lambda: plot(close_vals),
 					height = 2,
 					width = 10,
 					text = "Plot")
 
-# place the button
-# in main window
 plot_button.pack()
 
-# run the gui
 window.mainloop()
