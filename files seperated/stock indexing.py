@@ -190,12 +190,5 @@ def create_table_again():
 
     c.execute()
 
-# Add Buttons
-# button_frame = LabelFrame(root, text="Commands")
-# button_frame.pack(fill="x", expand="yes", padx=20)
-
-# update_button = Button(button_frame, text="Update Stock List", command=update_record)
-# update_button.grid(row=0, column=0, padx=10, pady=10)
-
 
 root.mainloop()
