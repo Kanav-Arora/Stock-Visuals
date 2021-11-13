@@ -1,6 +1,6 @@
 from tkinter import *
 from tkinter import messagebox
-from PIL import ImageTk,Image
+from PIL import ImageTk
 import webbrowser;
 
 root = Tk()
