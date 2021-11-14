@@ -29,17 +29,22 @@ def home_window(root):
     crypto_index.grid(row=1, padx=290, pady=10, sticky="nesw")
 
     stock_details = Button(myFrame, text="Stock Details", fg="#FFFFFF",
-                           bg="#3b404e", relief=GROOVE, command=stock_details_window)
+                           bg="#3b404e", relief=GROOVE, command= lambda:stock_details_window(root))
     stock_details.config(highlightbackground="#3b404e",
                          highlightthickness=2, highlightcolor="#3b404e")
     stock_details.grid(row=2, padx=290, pady=10, sticky="nesw")
 
     crypto_details = Button(myFrame, text="Crypto Details", fg="#FFFFFF",
-                            bg="#3b404e", relief=GROOVE, command=crypto_details_window)
+                            bg="#3b404e", relief=GROOVE, command= lambda : crypto_details_window(root))
     crypto_details.config(highlightbackground="#3b404e",
                           highlightthickness=2, highlightcolor="#3b404e")
     crypto_details.grid(row=3, padx=290, pady=10, sticky="nesw")
 
+    plot_info = Button(myFrame, text="Analysis", fg="#FFFFFF",
+                            bg="#3b404e", relief=GROOVE, command= lambda : plot_info_window(root))
+    plot_info.config(highlightbackground="#3b404e",
+                          highlightthickness=2, highlightcolor="#3b404e")
+    plot_info.grid(row=4, padx=290, pady=10, sticky="nesw")
 
 # -------------------------------------------------------------------------------------
 
@@ -47,7 +52,7 @@ def home_window(root):
 
 
 def stock_index_window(root):
-    myFrame.config(text="Home Page")
+    myFrame.config(text="Stock Index")
     datalist = backend.refresh()
     for child in myFrame.winfo_children():
         child.destroy()
@@ -221,7 +226,7 @@ def stock_index_window(root):
 # -------------------------------- Crypto Index Window ---------------------------------------
 
 def crypto_index_window(root):
-    myFrame.config(text="Home Page")
+    myFrame.config(text="Crypto Index")
     datalist = backend.crypto_refresh()
     for child in myFrame.winfo_children():
         child.destroy()
@@ -394,7 +399,7 @@ def crypto_index_window(root):
 # -------------------------------- Stock Detail Window ---------------------------------------
 
 
-def stock_details_window():
+def stock_details_window(root):
     def value():
         tickerEnter
         dateEnter, highEnter, lowEnter, openEnter, closeEnter
@@ -482,15 +487,112 @@ def stock_details_window():
 
 # -------------------------------- Crypto Detail Window ---------------------------------------
 
-
-def crypto_details_window():
-    myFrame.config(text="Home Page")
+def crypto_details_window(root):
+    myFrame.config(text="Crypto Details")
 
     for child in myFrame.winfo_children():
         child.destroy()
 
+    def value():
+        global tickerEnter
+        global dateEnter, openEnter, closeEnter
+        date_today = datetime.today()
+        date_entered = datetime.strptime(dateEnter.get(), "%Y-%m-%d")
+        if(date_entered<=date_today):
+            tickerval = tickerEnter.get()
+            dateval = dateEnter.get()
+            data_json = backend.crypto_daily_o_c(tickerval.upper(),dateval)
+            openEnter.configure(text = data_json['open'])
+            closeEnter.configure(text = data_json['close'])
+        else:
+            tkinter.messagebox.showerror(title = "Invalid Input", message = "Date should be of format YYYY-MM-DD")
+
+    ticker = Label(myFrame, text = "Crypto Code:", relief = RAISED, fg = "white", bg = "#3b404e", bd=0 , font = ("Calibri",12), padx= 20, pady = 20)
+    ticker.grid(row = 0, column = 0, padx= 60, pady = 5)
+
+    date = Label(myFrame, text = "Date:", relief = RAISED, fg = "white", bg = "#3b404e", bd=0 , font = ("Calibri",12))
+    date.grid(row = 1, column = 0, padx= 60, pady = 5)
+
+    tickerEnter = Entry(myFrame, highlightbackground= "#3b404e", bg = "#3b404e", borderwidth = 2, fg ="white")
+    tickerEnter.grid(row = 0, column = 1, padx= 60, pady = 5)
+
+    dateEnter = Entry(myFrame, highlightbackground= "#3b404e", bg = "#3b404e", borderwidth = 2, fg = "white")
+    dateEnter.grid(row = 1, column = 1, padx= 60, pady = 5)
+
+    search = Button(myFrame, text = "Search",  bg = "#3b404e", relief = GROOVE, borderwidth= 2, command= lambda: value())
+    search.grid(row = 2, column = 0, columnspan = 2, padx= 30, pady=20)
+    search.config(highlightbackground = "#3b404e", highlightthickness = 2, highlightcolor= "#3b404e")
+
+    open = Label(myFrame, text = "Open:", relief = RAISED, fg = "white", bg = "#3b404e", bd=0 , font = ("Calibri",12), padx= 20, pady = 10)
+    open.grid(row = 3, column = 0, padx= 60, pady = 5)
+
+    close = Label(myFrame, text = "Close:", relief = RAISED, fg = "white", bg = "#3b404e", bd=0 , font = ("Calibri",12), padx= 20, pady = 10)
+    close.grid(row = 4, column = 0, padx= 60, pady = 5)
+
+    openEnter = Label(myFrame, text = " " ,highlightbackground= "#3b404e", bg = "#3b404e", borderwidth = 2, fg = "white")
+    openEnter.grid(row = 3, column = 1, padx= 80, pady = 5)
+
+    closeEnter = Label(myFrame, text = " " ,highlightbackground= "#3b404e", bg = "#3b404e", borderwidth = 2, fg = "white")
+    closeEnter.grid(row = 4, column = 1, padx= 80, pady = 5)
+
+    home = Button(myFrame, text = "Home",  bg = "#3b404e", relief = GROOVE, borderwidth= 2, command= lambda: home_window(root))
+    home.grid(row = 7, column = 0, columnspan = 2, padx= 30, pady=20)
+    home.config(highlightbackground = "#3b404e", highlightthickness = 2, highlightcolor= "#3b404e")
+
 # -------------------------------------------------------------------------------------
 
+# -------------------------------- Analysis Window ---------------------------------------
+
+def plot_info_window(root):
+    myFrame.config(text="Analysis")
+
+    for child in myFrame.winfo_children():
+        child.destroy()
+    def value():
+        global tickerEnter
+        global indicator1,indicator2,indicator3,indicator4
+        indicator1 = Button(myFrame, text = "Indicator 1",  bg = "#3b404e", relief = GROOVE, borderwidth= 2)
+        indicator1.grid(row = 9, column = 0, columnspan = 1, padx= 0, pady=20)
+        indicator1.config(highlightbackground = "#3b404e", highlightthickness = 2, highlightcolor= "#3b404e")
+        
+        indicator2 = Button(myFrame, text = "Indicator 2",  bg = "#3b404e", relief = GROOVE, borderwidth= 2)
+        indicator2.grid(row = 9, column = 1, columnspan = 1, padx= 0, pady=20)
+        indicator2.config(highlightbackground = "#3b404e", highlightthickness = 2, highlightcolor= "#3b404e")
+
+        indicator3 = Button(myFrame, text = "Indicator 3",  bg = "#3b404e", relief = GROOVE, borderwidth= 2)
+        indicator3.grid(row = 10, column = 0, columnspan = 1, padx= 0, pady=20)
+        indicator3.config(highlightbackground = "#3b404e", highlightthickness = 2, highlightcolor= "#3b404e")
+
+        indicator4 = Button(myFrame, text = "Indicator 4",  bg = "#3b404e", relief = GROOVE, borderwidth= 2)
+        indicator4.grid(row = 10, column = 1, columnspan = 1, padx= 0, pady=20)
+        indicator4.config(highlightbackground = "#3b404e", highlightthickness = 2, highlightcolor= "#3b404e")
+            
+        home = Button(myFrame, text = "Home",  bg = "#3b404e", relief = GROOVE, borderwidth= 2, command= lambda: home_window(root))
+        home.grid(row = 15, column = 0, columnspan = 2, padx= 0, pady=0)
+        home.config(highlightbackground = "#3b404e", highlightthickness = 2, highlightcolor= "#3b404e")
+
+    ticker = Label(myFrame, text = "Stock Ticker:", relief = RAISED, fg = "white", bg = "#3b404e", bd=0 , font = ("Calibri",12), padx= 20, pady = 20)
+    ticker.grid(row = 0, column = 0, padx= 60, pady = 5)
+
+    fromdate = Label(myFrame, text = "From Date:", relief = RAISED, fg = "white", bg = "#3b404e", bd=0 , font = ("Calibri",12))
+    fromdate.grid(row = 1, column = 0, padx= 60, pady = 5)
+
+    todate = Label(myFrame, text = "To Date:", relief = RAISED, fg = "white", bg = "#3b404e", bd=0 , font = ("Calibri",12))
+    todate.grid(row = 2, column = 0, padx= 60, pady = 20)
+
+    tickerEnter = Entry(myFrame, highlightbackground= "#3b404e", bg = "#3b404e", borderwidth = 2, fg ="white")
+    tickerEnter.grid(row = 0, column = 1, padx= 60, pady = 5)
+
+    fromdateEnter = Entry(myFrame, highlightbackground= "#3b404e", bg = "#3b404e", borderwidth = 2, fg = "white")
+    fromdateEnter.grid(row = 1, column = 1, padx= 60, pady = 5)
+
+    todateEnter = Entry(myFrame, highlightbackground= "#3b404e", bg = "#3b404e", borderwidth = 2, fg = "white")
+    todateEnter.grid(row = 2, column = 1, padx= 60, pady = 20)
+
+    next = Button(myFrame, text = "Next",  bg = "#3b404e", relief = GROOVE, borderwidth= 2, command= lambda: value())
+    next.grid(row = 4, column = 0, columnspan = 2, padx= 0, pady=0)
+    next.config(highlightbackground = "#3b404e", highlightthickness = 2, highlightcolor= "#3b404e")
+# -------------------------------------------------------------------------------------
 
 root = Tk()
 root.title("Book Worm")
