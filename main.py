@@ -641,16 +641,11 @@ def plot_info_window(root):
 # -------------------------------- Plot Window ---------------------------------------
 def plot_window(data):
     myFrame.config(text="Plot")
-    back = Button(myFrame, text="Back",  bg="#3b404e", relief=GROOVE,
-              borderwidth=2, command=lambda: plot_info_window(root))
-    back.grid(row=5, column=0, columnspan=2, padx=0, pady=5)
-    back.config(highlightbackground="#3b404e",
-                    highlightthickness=2, highlightcolor="#3b404e")
     for child in myFrame.winfo_children():
         child.destroy()
 
     def plotter(data1):
-        fig = Figure(figsize=(5, 5),
+        fig = Figure(figsize=(6.8, 4.5),
                      dpi=100)
         plot1 = fig.add_subplot(111)
         plot1.plot(data1)
@@ -660,6 +655,11 @@ def plot_window(data):
         canvas.draw()
 
         canvas.get_tk_widget().pack()
+        back = Button(myFrame, text="Back",fg="#FFFFFF", bg="#3b404e", relief=GROOVE,
+                borderwidth=2, command=lambda: plot_info_window(root))
+        back.config(highlightbackground="#3b404e",
+                        highlightthickness=2, highlightcolor="#3b404e")
+        back.pack(pady=5)
 
         toolbar = NavigationToolbar2Tk(canvas,
                                        myFrame)
