@@ -19,31 +19,31 @@ def home_window(root):
     for child in myFrame.winfo_children():
         child.destroy()
 
-    stock_index = Button(myFrame, text="Stock Index", fg="#FFFFFF", bg="#3b404e",
+    stock_index = Button(myFrame, text="Stock Index", bg="#3b404e",
                          relief=GROOVE, borderwidth=2, command=lambda: stock_index_window(root))
     stock_index.config(highlightbackground="#3b404e",
                        highlightthickness=2, highlightcolor="#3b404e")
     stock_index.grid(row=0, padx=290, pady=10, sticky="nesw")
 
-    crypto_index = Button(myFrame, text="Crypto Index", fg="#FFFFFF",
+    crypto_index = Button(myFrame, text="Crypto Index", 
                           bg="#3b404e", relief=GROOVE, command=lambda:  crypto_index_window(root))
     crypto_index.config(highlightbackground="#3b404e",
                         highlightthickness=2, highlightcolor="#3b404e")
     crypto_index.grid(row=1, padx=290, pady=10, sticky="nesw")
 
-    stock_details = Button(myFrame, text="Stock Details", fg="#FFFFFF",
+    stock_details = Button(myFrame, text="Stock Details", 
                            bg="#3b404e", relief=GROOVE, command=lambda: stock_details_window(root))
     stock_details.config(highlightbackground="#3b404e",
                          highlightthickness=2, highlightcolor="#3b404e")
     stock_details.grid(row=2, padx=290, pady=10, sticky="nesw")
 
-    crypto_details = Button(myFrame, text="Crypto Details", fg="#FFFFFF",
+    crypto_details = Button(myFrame, text="Crypto Details", 
                             bg="#3b404e", relief=GROOVE, command=lambda: crypto_details_window(root))
     crypto_details.config(highlightbackground="#3b404e",
                           highlightthickness=2, highlightcolor="#3b404e")
     crypto_details.grid(row=3, padx=290, pady=10, sticky="nesw")
 
-    plot_info = Button(myFrame, text="Analysis", fg="#FFFFFF",
+    plot_info = Button(myFrame, text="Analysis",
                        bg="#3b404e", relief=GROOVE, command=lambda: plot_info_window(root))
     plot_info.config(highlightbackground="#3b404e",
                      highlightthickness=2, highlightcolor="#3b404e")
@@ -655,7 +655,7 @@ def plot_window(data):
         canvas.draw()
 
         canvas.get_tk_widget().pack()
-        back = Button(myFrame, text="Back",fg="#FFFFFF", bg="#3b404e", relief=GROOVE,
+        back = Button(myFrame, text="Back", bg="#3b404e", relief=GROOVE,
                 borderwidth=2, command=lambda: plot_info_window(root))
         back.config(highlightbackground="#3b404e",
                         highlightthickness=2, highlightcolor="#3b404e")
