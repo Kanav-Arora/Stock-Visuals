@@ -8,7 +8,7 @@ from datetime import datetime
 def value():
     global tickerEnter
     global indicator1,indicator2,indicator3,indicator4
-    indicator1 = Button(myFrame, text = "Indicator 1",  bg = "#3b404e", relief = GROOVE, borderwidth= 2)
+    indicator1 = Button(myFrame, text = "Support Resistance Indicator",  bg = "#3b404e", relief = GROOVE, borderwidth= 2)
     indicator1.grid(row = 9, column = 0, columnspan = 1, padx= 0, pady=20)
     indicator1.config(highlightbackground = "#3b404e", highlightthickness = 2, highlightcolor= "#3b404e")
     
