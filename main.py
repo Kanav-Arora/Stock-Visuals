@@ -656,7 +656,7 @@ def plot_window(data):
         back.pack(pady=5)
 
         indicator1 = Button(myFrame, text="Support Resistance Indicator",fg="#FFFFFF", bg="#3b404e", relief=GROOVE,
-                borderwidth=2, command=lambda: plot_info_window(root))
+                borderwidth=2, command=lambda: support_resistance(tickerEnter.get(),fromdateEnter.get(), todateEnter.get()))
         indicator1.config(highlightbackground="#3b404e",
                         highlightthickness=2, highlightcolor="#3b404e")
         indicator1.pack(pady=5)
