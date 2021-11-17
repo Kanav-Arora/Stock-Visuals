@@ -578,7 +578,7 @@ def plot_info_window(root):
             fromdateEnter.get(), todateEnter.get(), tickerEnter.get())
 
         plot = Button(myFrame, text="Plot",  bg="#3b404e",
-                      relief=GROOVE, borderwidth=2, command=lambda: plot_window(data))
+                      relief=GROOVE, borderwidth=2, command=lambda: plot_window(data,tickerEnter, fromdateEnter, todateEnter))
         plot.grid(row=9, column=0, columnspan=2, padx=0, pady=20)
         plot.config(highlightbackground="#3b404e",
                     highlightthickness=2, highlightcolor="#3b404e")
@@ -633,7 +633,7 @@ def plot_info_window(root):
 # -------------------------------------------------------------------------------------
 
 # -------------------------------- Plot Window ---------------------------------------
-def plot_window(data):
+def plot_window(data,tickerEnter, fromdateEnter, todateEnter):
     myFrame.config(text="Plot")
     for child in myFrame.winfo_children():
         child.destroy()
@@ -749,6 +749,12 @@ def support_resistance(ticker,from_date,to_date):
         back.config(highlightbackground="#3b404e",
                         highlightthickness=2, highlightcolor="#3b404e")
         back.pack(pady=5)
+
+        indicator1 = Button(myFrame, text="Turn off Indicator",fg="#FFFFFF", bg="#3b404e", relief=GROOVE,
+                borderwidth=2, command=lambda: plot_window(root))
+        indicator1.config(highlightbackground="#3b404e",
+                        highlightthickness=2, highlightcolor="#3b404e")
+        indicator1.pack(pady=5)
 
         toolbar = NavigationToolbar2Tk(canvas,
                                        myFrame)
