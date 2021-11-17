@@ -19,31 +19,31 @@ def home_window(root):
     for child in myFrame.winfo_children():
         child.destroy()
 
-    stock_index = Button(myFrame, text="Stock Index", bg="#3b404e",
+    stock_index = Button(myFrame, text="Stock Index", fg="#FFFFFF", bg="#3b404e",
                          relief=GROOVE, borderwidth=2, command=lambda: stock_index_window(root))
     stock_index.config(highlightbackground="#3b404e",
                        highlightthickness=2, highlightcolor="#3b404e")
     stock_index.grid(row=0, padx=290, pady=10, sticky="nesw")
 
-    crypto_index = Button(myFrame, text="Crypto Index", 
+    crypto_index = Button(myFrame, text="Crypto Index", fg="#FFFFFF",
                           bg="#3b404e", relief=GROOVE, command=lambda:  crypto_index_window(root))
     crypto_index.config(highlightbackground="#3b404e",
                         highlightthickness=2, highlightcolor="#3b404e")
     crypto_index.grid(row=1, padx=290, pady=10, sticky="nesw")
 
-    stock_details = Button(myFrame, text="Stock Details", 
+    stock_details = Button(myFrame, text="Stock Details", fg="#FFFFFF",
                            bg="#3b404e", relief=GROOVE, command=lambda: stock_details_window(root))
     stock_details.config(highlightbackground="#3b404e",
                          highlightthickness=2, highlightcolor="#3b404e")
     stock_details.grid(row=2, padx=290, pady=10, sticky="nesw")
 
-    crypto_details = Button(myFrame, text="Crypto Details", 
+    crypto_details = Button(myFrame, text="Crypto Details", fg="#FFFFFF",
                             bg="#3b404e", relief=GROOVE, command=lambda: crypto_details_window(root))
     crypto_details.config(highlightbackground="#3b404e",
                           highlightthickness=2, highlightcolor="#3b404e")
     crypto_details.grid(row=3, padx=290, pady=10, sticky="nesw")
 
-    plot_info = Button(myFrame, text="Analysis",
+    plot_info = Button(myFrame, text="Analysis", fg="#FFFFFF",
                        bg="#3b404e", relief=GROOVE, command=lambda: plot_info_window(root))
     plot_info.config(highlightbackground="#3b404e",
                      highlightthickness=2, highlightcolor="#3b404e")
@@ -583,22 +583,10 @@ def plot_info_window(root):
         indicator1.config(highlightbackground="#3b404e",
                           highlightthickness=2, highlightcolor="#3b404e")
 
-        indicator2 = Button(myFrame, text="Indicator 2",
+        indicator2 = Button(myFrame, text="Moving Average Indicator",
                             bg="#3b404e", relief=GROOVE, borderwidth=2)
         indicator2.grid(row=10, column=1, columnspan=1, padx=0, pady=20)
         indicator2.config(highlightbackground="#3b404e",
-                          highlightthickness=2, highlightcolor="#3b404e")
-
-        indicator3 = Button(myFrame, text="Indicator 3",
-                            bg="#3b404e", relief=GROOVE, borderwidth=2)
-        indicator3.grid(row=11, column=0, columnspan=1, padx=0, pady=20)
-        indicator3.config(highlightbackground="#3b404e",
-                          highlightthickness=2, highlightcolor="#3b404e")
-
-        indicator4 = Button(myFrame, text="Indicator 4",
-                            bg="#3b404e", relief=GROOVE, borderwidth=2)
-        indicator4.grid(row=11, column=1, columnspan=1, padx=0, pady=20)
-        indicator4.config(highlightbackground="#3b404e",
                           highlightthickness=2, highlightcolor="#3b404e")
 
     ticker = Label(myFrame, text="Stock Ticker:", relief=RAISED, fg="white",
@@ -613,7 +601,7 @@ def plot_info_window(root):
                    fg="white", bg="#3b404e", bd=0, font=("Calibri", 12))
     todate.grid(row=2, column=0, padx=60, pady=20)
 
-    tickerEnter = Entry(myFrame, highlightbackground="#3b404e",
+    tickerEnter = Entry(myFrame, highlightbackground="#3b404e" ,
                         bg="#3b404e", borderwidth=2, fg="white")
     tickerEnter.grid(row=0, column=1, padx=60, pady=5)
 
@@ -655,11 +643,25 @@ def plot_window(data):
         canvas.draw()
 
         canvas.get_tk_widget().pack()
-        back = Button(myFrame, text="Back", bg="#3b404e", relief=GROOVE,
+        back = Button(myFrame, text="Back",fg="#FFFFFF", bg="#3b404e", relief=GROOVE,
                 borderwidth=2, command=lambda: plot_info_window(root))
         back.config(highlightbackground="#3b404e",
                         highlightthickness=2, highlightcolor="#3b404e")
         back.pack(pady=5)
+
+        indicator1 = Button(myFrame, text="Support Resistance Indicator",fg="#FFFFFF", bg="#3b404e", relief=GROOVE,
+                borderwidth=2, command=lambda: plot_info_window(root))
+        indicator1.config(highlightbackground="#3b404e",
+                        highlightthickness=2, highlightcolor="#3b404e")
+        indicator1.pack(pady=5)
+
+        indicator2 = Button(myFrame, text="Moving Average Indicator",fg="#FFFFFF", bg="#3b404e", relief=GROOVE,
+                borderwidth=2, command=lambda: plot_info_window(root))
+        indicator2.config(highlightbackground="#3b404e",
+                        highlightthickness=2, highlightcolor="#3b404e")
+        indicator2.pack(pady=5)
+
+
 
         toolbar = NavigationToolbar2Tk(canvas,
                                        myFrame)
@@ -678,7 +680,7 @@ def plot_window(data):
 
 
 root = Tk()
-root.title("Book Worm")
+root.title("Stock Visualizer")
 root.geometry("600x500")
 root.resizable(0, 0)
 
