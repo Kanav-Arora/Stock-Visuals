@@ -9,6 +9,12 @@ from datetime import datetime
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg,
                                                NavigationToolbar2Tk)
+import pandas as pd
+import numpy as np
+import yfinance
+from mplfinance.original_flavor import candlestick_ohlc
+import matplotlib.dates as mpl_dates
+import matplotlib.pyplot as plt
 
 
 # -------------------------------- Home Window ---------------------------------------
@@ -578,7 +584,7 @@ def plot_info_window(root):
                     highlightthickness=2, highlightcolor="#3b404e")
 
         indicator1 = Button(myFrame, text="Support Resistance Indicator",
-                            bg="#3b404e", relief=GROOVE, borderwidth=2)
+                            bg="#3b404e", relief=GROOVE, borderwidth=2, command= lambda: support_resistance(tickerEnter.get(),fromdateEnter.get(), todateEnter.get()))
         indicator1.grid(row=10, column=0, columnspan=1, padx=0, pady=20)
         indicator1.config(highlightbackground="#3b404e",
                           highlightthickness=2, highlightcolor="#3b404e")
@@ -675,6 +681,80 @@ def plot_window(data):
         close_vals.append(i['c'])
 
     plotter(close_vals)
+
+# -------------------------------- Support Resistance Window ---------------------------------------
+
+def support_resistance(ticker,from_date,to_date):
+    myFrame.config(text="Plot")
+    for child in myFrame.winfo_children():
+        child.destroy()
+    plt.rcParams['figure.figsize'] = [12, 7]
+    plt.rc('font', size=14)
+    ticker = yfinance.Ticker(ticker)
+    df = ticker.history(interval="1d",start=from_date, end=to_date)
+    df['Date'] = pd.to_datetime(df.index)
+    df['Date'] = df['Date'].apply(mpl_dates.date2num)
+    df = df.loc[:,['Date', 'Open', 'High', 'Low', 'Close']]
+
+    def isSupport(df,i):
+        support = df['Low'][i] < df['Low'][i-1]  and df['Low'][i] < df['Low'][i+1] and df['Low'][i+1] < df['Low'][i+2] and df['Low'][i-1] < df['Low'][i-2]
+        return support
+    def isResistance(df,i):
+        resistance = df['High'][i] > df['High'][i-1]  and df['High'][i] > df['High'][i+1] and df['High'][i+1] > df['High'][i+2] and df['High'][i-1] > df['High'][i-2]
+        return resistance
+
+    levels = []
+    for i in range(2,df.shape[0]-2):
+        if isSupport(df,i):
+            levels.append((i,df['Low'][i]))
+        elif isResistance(df,i):
+            levels.append((i,df['High'][i]))
+
+    s =  np.mean(df['High'] - df['Low'])
+    def isFarFromLevel(l):
+        return np.sum([abs(l-x) < s  for x in levels]) == 0
+
+    levels = []
+    for i in range(2,df.shape[0]-2):
+        if isSupport(df,i):
+            l = df['Low'][i]
+            if isFarFromLevel(l):
+                levels.append((i,l))
+        elif isResistance(df,i):
+            l = df['High'][i]
+            if isFarFromLevel(l):
+                levels.append((i,l))
+    def plot_all():
+        fig, ax = plt.subplots()
+        fig.set_size_inches(6.8,4.5)
+        candlestick_ohlc(ax,df.values,width=0.6, \
+                        colorup='green', colordown='red', alpha=0.8)
+        date_format = mpl_dates.DateFormatter('%d %b %Y')
+        ax.xaxis.set_major_formatter(date_format)
+        fig.autofmt_xdate()
+        fig.tight_layout()
+        for level in levels:
+            plt.hlines(level[1],xmin=df['Date'][level[0]],\
+                    xmax=max(df['Date']),colors='blue')
+        
+        canvas = FigureCanvasTkAgg(fig,
+                                   master=myFrame)
+        canvas.draw()
+
+        canvas.get_tk_widget().pack()
+        back = Button(myFrame, text="Back", bg="#3b404e", relief=GROOVE,
+                borderwidth=2, command=lambda: plot_info_window(root))
+        back.config(highlightbackground="#3b404e",
+                        highlightthickness=2, highlightcolor="#3b404e")
+        back.pack(pady=5)
+
+        toolbar = NavigationToolbar2Tk(canvas,
+                                       myFrame)
+        toolbar.update()
+
+        canvas.get_tk_widget().pack()
+
+    plot_all()
 
 
 root = Tk()
