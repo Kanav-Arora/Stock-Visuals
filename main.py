@@ -15,6 +15,8 @@ import yfinance
 from mplfinance.original_flavor import candlestick_ohlc
 import matplotlib.dates as mpl_dates
 import matplotlib.pyplot as plt
+import plotly.graph_objects as go
+import pandas_ta as ta
 
 
 # -------------------------------- Home Window ---------------------------------------
@@ -25,31 +27,31 @@ def home_window(root):
     for child in myFrame.winfo_children():
         child.destroy()
 
-    stock_index = Button(myFrame, text="Stock Index",bg="#3b404e",
+    stock_index = Button(myFrame, text="Stock Index", bg="#3b404e",
                          relief=GROOVE, borderwidth=2, command=lambda: stock_index_window(root))
     stock_index.config(highlightbackground="#3b404e",
                        highlightthickness=2, highlightcolor="#3b404e")
     stock_index.grid(row=0, padx=290, pady=10, sticky="nesw")
 
-    crypto_index = Button(myFrame, text="Crypto Index", 
+    crypto_index = Button(myFrame, text="Crypto Index",
                           bg="#3b404e", relief=GROOVE, command=lambda:  crypto_index_window(root))
     crypto_index.config(highlightbackground="#3b404e",
                         highlightthickness=2, highlightcolor="#3b404e")
     crypto_index.grid(row=1, padx=290, pady=10, sticky="nesw")
 
-    stock_details = Button(myFrame, text="Stock Details", 
+    stock_details = Button(myFrame, text="Stock Details",
                            bg="#3b404e", relief=GROOVE, command=lambda: stock_details_window(root))
     stock_details.config(highlightbackground="#3b404e",
                          highlightthickness=2, highlightcolor="#3b404e")
     stock_details.grid(row=2, padx=290, pady=10, sticky="nesw")
 
-    crypto_details = Button(myFrame, text="Crypto Details", 
+    crypto_details = Button(myFrame, text="Crypto Details",
                             bg="#3b404e", relief=GROOVE, command=lambda: crypto_details_window(root))
     crypto_details.config(highlightbackground="#3b404e",
                           highlightthickness=2, highlightcolor="#3b404e")
     crypto_details.grid(row=3, padx=290, pady=10, sticky="nesw")
 
-    plot_info = Button(myFrame, text="Analysis", 
+    plot_info = Button(myFrame, text="Analysis",
                        bg="#3b404e", relief=GROOVE, command=lambda: plot_info_window(root))
     plot_info.config(highlightbackground="#3b404e",
                      highlightthickness=2, highlightcolor="#3b404e")
@@ -432,7 +434,7 @@ def stock_details_window(root):
         child.destroy()
 
     ticker = Label(myFrame, text="Stock Ticker:", relief=RAISED, fg="white",
-                 bg="#3b404e", bd=0, font=("Calibri", 12), padx=90, pady=20)
+                   bg="#3b404e", bd=0, font=("Calibri", 12), padx=90, pady=20)
     ticker.grid(row=1, column=0, padx=60, pady=5)
 
     date = Label(myFrame, text="Date:", relief=RAISED, fg="white",
@@ -578,19 +580,19 @@ def plot_info_window(root):
             fromdateEnter.get(), todateEnter.get(), tickerEnter.get())
 
         plot = Button(myFrame, text="Plot",  bg="#3b404e",
-                      relief=GROOVE, borderwidth=2, command=lambda: plot_window(data,tickerEnter, fromdateEnter, todateEnter))
+                      relief=GROOVE, borderwidth=2, command=lambda: plot_window(data, tickerEnter, fromdateEnter, todateEnter))
         plot.grid(row=9, column=0, columnspan=2, padx=0, pady=20)
         plot.config(highlightbackground="#3b404e",
                     highlightthickness=2, highlightcolor="#3b404e")
 
         indicator1 = Button(myFrame, text="Support Resistance Indicator",
-                            bg="#3b404e", relief=GROOVE, borderwidth=2, command= lambda: support_resistance(tickerEnter.get(),fromdateEnter.get(), todateEnter.get()))
+                            bg="#3b404e", relief=GROOVE, borderwidth=2, command=lambda: support_resistance(tickerEnter.get(), fromdateEnter.get(), todateEnter.get()))
         indicator1.grid(row=10, column=0, columnspan=1, padx=0, pady=20)
         indicator1.config(highlightbackground="#3b404e",
                           highlightthickness=2, highlightcolor="#3b404e")
 
         indicator2 = Button(myFrame, text="Moving Average Indicator",
-                            bg="#3b404e", relief=GROOVE, borderwidth=2)
+                            bg="#3b404e", relief=GROOVE, borderwidth=2, command= lambda : moving_average(tickerEnter, fromdateEnter, todateEnter))
         indicator2.grid(row=10, column=1, columnspan=1, padx=0, pady=20)
         indicator2.config(highlightbackground="#3b404e",
                           highlightthickness=2, highlightcolor="#3b404e")
@@ -607,7 +609,7 @@ def plot_info_window(root):
                    fg="white", bg="#3b404e", bd=0, font=("Calibri", 12))
     todate.grid(row=2, column=0, padx=60, pady=20)
 
-    tickerEnter = Entry(myFrame, highlightbackground="#3b404e" ,
+    tickerEnter = Entry(myFrame, highlightbackground="#3b404e",
                         bg="#3b404e", borderwidth=2, fg="white")
     tickerEnter.grid(row=0, column=1, padx=60, pady=5)
 
@@ -633,7 +635,9 @@ def plot_info_window(root):
 # -------------------------------------------------------------------------------------
 
 # -------------------------------- Plot Window ---------------------------------------
-def plot_window(data,tickerEnter, fromdateEnter, todateEnter):
+
+
+def plot_window(data, tickerEnter, fromdateEnter, todateEnter):
     myFrame.config(text="Plot")
     for child in myFrame.winfo_children():
         child.destroy()
@@ -650,15 +654,15 @@ def plot_window(data,tickerEnter, fromdateEnter, todateEnter):
 
         canvas.get_tk_widget().pack()
         back = Button(myFrame, text="Back", bg="#3b404e", relief=GROOVE,
-                borderwidth=2, command=lambda: plot_info_window(root))
+                      borderwidth=2, command=lambda: plot_info_window(root))
         back.config(highlightbackground="#3b404e",
-                        highlightthickness=2, highlightcolor="#3b404e")
+                    highlightthickness=2, highlightcolor="#3b404e")
         back.pack(pady=5)
 
         indicator1 = Button(myFrame, text="Support Resistance Indicator", bg="#3b404e", relief=GROOVE,
-                borderwidth=2, command=lambda: support_resistance(tickerEnter.get(),fromdateEnter.get(), todateEnter.get()))
+                            borderwidth=2, command=lambda: support_resistance(tickerEnter.get(), fromdateEnter.get(), todateEnter.get()))
         indicator1.config(highlightbackground="#3b404e",
-                        highlightthickness=2, highlightcolor="#3b404e")
+                          highlightthickness=2, highlightcolor="#3b404e")
         indicator1.pack(pady=5)
 
         # indicator2 = Button(myFrame, text="Moving Average Indicator",bg="#3b404e", relief=GROOVE,
@@ -667,15 +671,11 @@ def plot_window(data,tickerEnter, fromdateEnter, todateEnter):
         #                 highlightthickness=2, highlightcolor="#3b404e")
         # indicator2.pack(pady=5)
 
-
-
         toolbar = NavigationToolbar2Tk(canvas,
                                        myFrame)
         toolbar.update()
 
         canvas.get_tk_widget().pack()
-
-
 
     close_vals = []
 
@@ -686,74 +686,80 @@ def plot_window(data,tickerEnter, fromdateEnter, todateEnter):
 
 # -------------------------------- Support Resistance Window ---------------------------------------
 
-def support_resistance(ticker_name,from_date,to_date):
+
+def support_resistance(ticker_name, from_date, to_date):
     myFrame.config(text="Plot")
     for child in myFrame.winfo_children():
         child.destroy()
     plt.rcParams['figure.figsize'] = [12, 7]
     plt.rc('font', size=14)
     ticker = yfinance.Ticker(ticker_name)
-    df = ticker.history(interval="1d",start=from_date, end=to_date)
+    df = ticker.history(interval="1d", start=from_date, end=to_date)
     df['Date'] = pd.to_datetime(df.index)
     df['Date'] = df['Date'].apply(mpl_dates.date2num)
-    df = df.loc[:,['Date', 'Open', 'High', 'Low', 'Close']]
+    df = df.loc[:, ['Date', 'Open', 'High', 'Low', 'Close']]
 
-    def isSupport(df,i):
-        support = df['Low'][i] < df['Low'][i-1]  and df['Low'][i] < df['Low'][i+1] and df['Low'][i+1] < df['Low'][i+2] and df['Low'][i-1] < df['Low'][i-2]
+    def isSupport(df, i):
+        support = df['Low'][i] < df['Low'][i-1] and df['Low'][i] < df['Low'][i +
+                                                                             1] and df['Low'][i+1] < df['Low'][i+2] and df['Low'][i-1] < df['Low'][i-2]
         return support
-    def isResistance(df,i):
-        resistance = df['High'][i] > df['High'][i-1]  and df['High'][i] > df['High'][i+1] and df['High'][i+1] > df['High'][i+2] and df['High'][i-1] > df['High'][i-2]
+
+    def isResistance(df, i):
+        resistance = df['High'][i] > df['High'][i-1] and df['High'][i] > df['High'][i +
+                                                                                    1] and df['High'][i+1] > df['High'][i+2] and df['High'][i-1] > df['High'][i-2]
         return resistance
 
     levels = []
-    for i in range(2,df.shape[0]-2):
-        if isSupport(df,i):
-            levels.append((i,df['Low'][i]))
-        elif isResistance(df,i):
-            levels.append((i,df['High'][i]))
+    for i in range(2, df.shape[0]-2):
+        if isSupport(df, i):
+            levels.append((i, df['Low'][i]))
+        elif isResistance(df, i):
+            levels.append((i, df['High'][i]))
 
-    s =  np.mean(df['High'] - df['Low'])
+    s = np.mean(df['High'] - df['Low'])
+
     def isFarFromLevel(l):
-        return np.sum([abs(l-x) < s  for x in levels]) == 0
+        return np.sum([abs(l-x) < s for x in levels]) == 0
 
     levels = []
-    for i in range(2,df.shape[0]-2):
-        if isSupport(df,i):
+    for i in range(2, df.shape[0]-2):
+        if isSupport(df, i):
             l = df['Low'][i]
             if isFarFromLevel(l):
-                levels.append((i,l))
-        elif isResistance(df,i):
+                levels.append((i, l))
+        elif isResistance(df, i):
             l = df['High'][i]
             if isFarFromLevel(l):
-                levels.append((i,l))
+                levels.append((i, l))
+
     def plot_all():
         fig, ax = plt.subplots()
-        fig.set_size_inches(6.8,4.5)
-        candlestick_ohlc(ax,df.values,width=0.6, \
-                        colorup='green', colordown='red', alpha=0.8)
+        fig.set_size_inches(6.8, 4.5)
+        candlestick_ohlc(ax, df.values, width=0.6,
+                         colorup='green', colordown='red', alpha=0.8)
         date_format = mpl_dates.DateFormatter('%d %b %Y')
         ax.xaxis.set_major_formatter(date_format)
         fig.autofmt_xdate()
         fig.tight_layout()
         for level in levels:
-            plt.hlines(level[1],xmin=df['Date'][level[0]],\
-                    xmax=max(df['Date']),colors='blue')
-        
+            plt.hlines(level[1], xmin=df['Date'][level[0]],
+                       xmax=max(df['Date']), colors='blue')
+
         canvas = FigureCanvasTkAgg(fig,
                                    master=myFrame)
         canvas.draw()
 
         canvas.get_tk_widget().pack()
         back = Button(myFrame, text="Back", bg="#3b404e", relief=GROOVE,
-                borderwidth=2, command=lambda: plot_info_window(root))
+                      borderwidth=2, command=lambda: plot_info_window(root))
         back.config(highlightbackground="#3b404e",
-                        highlightthickness=2, highlightcolor="#3b404e")
+                    highlightthickness=2, highlightcolor="#3b404e")
         back.pack(pady=5)
 
         indicator1 = Button(myFrame, text="Turn off Indicator", bg="#3b404e", relief=GROOVE,
-                borderwidth=2, command=lambda: plot_window(root, ticker_name, from_date, to_date))
+                            borderwidth=2, command=lambda: plot_window(root, ticker_name, from_date, to_date))
         indicator1.config(highlightbackground="#3b404e",
-                        highlightthickness=2, highlightcolor="#3b404e")
+                          highlightthickness=2, highlightcolor="#3b404e")
         indicator1.pack(pady=5)
 
         toolbar = NavigationToolbar2Tk(canvas,
@@ -763,6 +769,66 @@ def support_resistance(ticker_name,from_date,to_date):
         canvas.get_tk_widget().pack()
 
     plot_all()
+
+# -------------------------------- Support Resistance Window ---------------------------------------
+
+
+def moving_average(ticker_name, from_date, to_date):
+    myFrame.config(text="Plot")
+    for child in myFrame.winfo_children():
+        child.destroy()
+    plt.rcParams['figure.figsize'] = [12, 7]
+    plt.rc('font', size=14)
+    nvda = yfinance.Ticker(ticker_name.get())
+    df = nvda.history(period='1y')[['Open', 'High', 'Low', 'Close', 'Volume']]
+    df['SMA_10'] = df['Close'].rolling(window=10).mean()
+    df.ta.sma(close='close', length=5, append=True)
+    df.ta.sma(close='close', length=10, append=True)
+    df.ta.sma(close='close', length=20, append=True)
+    moving_averages = ta.Strategy(
+        name="SMA_5_10_20",
+        ta=[
+            {"kind": "sma", "length": 5},
+            {"kind": "sma", "length": 10},
+            {"kind": "sma", "length": 20}
+        ]
+    )
+
+
+    df.ta.cores = 0
+    df.ta.strategy(moving_averages, append=True)
+    df.ta.cores = 0  # optional, but requires if __name__ == "__main__" syntax if not set to 0
+    df.ta.strategy(moving_averages)
+    # Create the Plot
+    fig = go.Figure(data=[
+        go.Candlestick(
+            x=df.index,
+            open=df['open'],
+            high=df['high'],
+            low=df['low'],
+            close=df['close'],
+            increasing_line_color='#ff9900',
+            decreasing_line_color='black',
+            showlegend=False,
+        ),
+    ])
+    layout = go.Layout(
+        plot_bgcolor='#efefef',
+        font_family='Monospace',
+        font_color='#000000',
+        font_size=20,
+        xaxis=dict(
+            rangeslider=dict(
+                visible=False
+            ))
+    )
+    fig.update_layout(layout)
+    fig.show()
+    canvas = FigureCanvasTkAgg(fig,
+                                   master=myFrame)
+    canvas.draw()
+
+    canvas.get_tk_widget().pack()
 
 
 root = Tk()
