@@ -580,19 +580,19 @@ def plot_info_window(root):
             fromdateEnter.get(), todateEnter.get(), tickerEnter.get())
 
         plot = Button(myFrame, text="Plot",  bg="#3b404e",
-                      relief=GROOVE, borderwidth=2, command=lambda: plot_window(data, tickerEnter, fromdateEnter, todateEnter))
+                      relief=GROOVE, borderwidth=2, command=lambda: plot_window(data, tickerEnter.get(), fromdateEnter.get(), todateEnter.get()))
         plot.grid(row=9, column=0, columnspan=2, padx=0, pady=20)
         plot.config(highlightbackground="#3b404e",
                     highlightthickness=2, highlightcolor="#3b404e")
 
         indicator1 = Button(myFrame, text="Support Resistance Indicator",
-                            bg="#3b404e", relief=GROOVE, borderwidth=2, command=lambda: support_resistance(tickerEnter.get(), fromdateEnter.get(), todateEnter.get()))
+                            bg="#3b404e", relief=GROOVE, borderwidth=2, command=lambda: support_resistance(data, tickerEnter.get(), fromdateEnter.get(), todateEnter.get()))
         indicator1.grid(row=10, column=0, columnspan=1, padx=0, pady=20)
         indicator1.config(highlightbackground="#3b404e",
                           highlightthickness=2, highlightcolor="#3b404e")
 
         indicator2 = Button(myFrame, text="Moving Average Indicator",
-                            bg="#3b404e", relief=GROOVE, borderwidth=2, command= lambda : moving_average(tickerEnter, fromdateEnter, todateEnter))
+                            bg="#3b404e", relief=GROOVE, borderwidth=2)
         indicator2.grid(row=10, column=1, columnspan=1, padx=0, pady=20)
         indicator2.config(highlightbackground="#3b404e",
                           highlightthickness=2, highlightcolor="#3b404e")
@@ -642,6 +642,8 @@ def plot_window(data, tickerEnter, fromdateEnter, todateEnter):
     for child in myFrame.winfo_children():
         child.destroy()
 
+        
+
     def plotter(data1):
         fig = Figure(figsize=(6.8, 4.5),
                      dpi=100)
@@ -660,7 +662,7 @@ def plot_window(data, tickerEnter, fromdateEnter, todateEnter):
         back.pack(pady=5)
 
         indicator1 = Button(myFrame, text="Support Resistance Indicator", bg="#3b404e", relief=GROOVE,
-                            borderwidth=2, command=lambda: support_resistance(tickerEnter.get(), fromdateEnter.get(), todateEnter.get()))
+                            borderwidth=2, command=lambda: support_resistance(data, tickerEnter, fromdateEnter, todateEnter))
         indicator1.config(highlightbackground="#3b404e",
                           highlightthickness=2, highlightcolor="#3b404e")
         indicator1.pack(pady=5)
@@ -687,7 +689,7 @@ def plot_window(data, tickerEnter, fromdateEnter, todateEnter):
 # -------------------------------- Support Resistance Window ---------------------------------------
 
 
-def support_resistance(ticker_name, from_date, to_date):
+def support_resistance(data, ticker_name, from_date, to_date):
     myFrame.config(text="Plot")
     for child in myFrame.winfo_children():
         child.destroy()
@@ -757,7 +759,7 @@ def support_resistance(ticker_name, from_date, to_date):
         back.pack(pady=5)
 
         indicator1 = Button(myFrame, text="Turn off Indicator", bg="#3b404e", relief=GROOVE,
-                            borderwidth=2, command=lambda: plot_window(root, ticker_name, from_date, to_date))
+                            borderwidth=2, command=lambda: plot_window(data, ticker_name, from_date, to_date))
         indicator1.config(highlightbackground="#3b404e",
                           highlightthickness=2, highlightcolor="#3b404e")
         indicator1.pack(pady=5)
@@ -773,62 +775,7 @@ def support_resistance(ticker_name, from_date, to_date):
 # -------------------------------- Support Resistance Window ---------------------------------------
 
 
-def moving_average(ticker_name, from_date, to_date):
-    myFrame.config(text="Plot")
-    for child in myFrame.winfo_children():
-        child.destroy()
-    plt.rcParams['figure.figsize'] = [12, 7]
-    plt.rc('font', size=14)
-    nvda = yfinance.Ticker(ticker_name.get())
-    df = nvda.history(period='1y')[['Open', 'High', 'Low', 'Close', 'Volume']]
-    df['SMA_10'] = df['Close'].rolling(window=10).mean()
-    df.ta.sma(close='close', length=5, append=True)
-    df.ta.sma(close='close', length=10, append=True)
-    df.ta.sma(close='close', length=20, append=True)
-    moving_averages = ta.Strategy(
-        name="SMA_5_10_20",
-        ta=[
-            {"kind": "sma", "length": 5},
-            {"kind": "sma", "length": 10},
-            {"kind": "sma", "length": 20}
-        ]
-    )
 
-
-    df.ta.cores = 0
-    df.ta.strategy(moving_averages, append=True)
-    df.ta.cores = 0  # optional, but requires if __name__ == "__main__" syntax if not set to 0
-    df.ta.strategy(moving_averages)
-    # Create the Plot
-    fig = go.Figure(data=[
-        go.Candlestick(
-            x=df.index,
-            open=df['open'],
-            high=df['high'],
-            low=df['low'],
-            close=df['close'],
-            increasing_line_color='#ff9900',
-            decreasing_line_color='black',
-            showlegend=False,
-        ),
-    ])
-    layout = go.Layout(
-        plot_bgcolor='#efefef',
-        font_family='Monospace',
-        font_color='#000000',
-        font_size=20,
-        xaxis=dict(
-            rangeslider=dict(
-                visible=False
-            ))
-    )
-    fig.update_layout(layout)
-    fig.show()
-    canvas = FigureCanvasTkAgg(fig,
-                                   master=myFrame)
-    canvas.draw()
-
-    canvas.get_tk_widget().pack()
 
 
 root = Tk()
