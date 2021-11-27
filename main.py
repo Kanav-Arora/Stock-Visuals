@@ -18,6 +18,9 @@ import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 import pandas_ta as ta
 
+import requests
+
+plt.style.use('fivethirtyeight')
 
 # -------------------------------- Home Window ---------------------------------------
 
@@ -591,8 +594,8 @@ def plot_info_window(root):
         indicator1.config(highlightbackground="#3b404e",
                           highlightthickness=2, highlightcolor="#3b404e")
 
-        indicator2 = Button(myFrame, text="Moving Average Indicator",
-                            bg="#3b404e", relief=GROOVE, borderwidth=2)
+        indicator2 = Button(myFrame, text="Williams %/r Indicator",
+                            bg="#3b404e", relief=GROOVE, borderwidth=2, command =  lambda: williams_window(data, tickerEnter.get(), fromdateEnter.get(), todateEnter.get()))
         indicator2.grid(row=10, column=1, columnspan=1, padx=0, pady=20)
         indicator2.config(highlightbackground="#3b404e",
                           highlightthickness=2, highlightcolor="#3b404e")
@@ -667,11 +670,11 @@ def plot_window(data, tickerEnter, fromdateEnter, todateEnter):
                           highlightthickness=2, highlightcolor="#3b404e")
         indicator1.pack(pady=5)
 
-        # indicator2 = Button(myFrame, text="Moving Average Indicator",bg="#3b404e", relief=GROOVE,
-        #         borderwidth=2, command=lambda: plot_info_window(root))
-        # indicator2.config(highlightbackground="#3b404e",
-        #                 highlightthickness=2, highlightcolor="#3b404e")
-        # indicator2.pack(pady=5)
+        indicator2 = Button(myFrame, text="Williams %/r Indicator",bg="#3b404e", relief=GROOVE,
+                borderwidth=2, command=lambda: williams_window(data, tickerEnter, fromdateEnter, todateEnter))
+        indicator2.config(highlightbackground="#3b404e",
+                        highlightthickness=2, highlightcolor="#3b404e")
+        indicator2.pack(pady=5)
 
         toolbar = NavigationToolbar2Tk(canvas,
                                        myFrame)
@@ -690,7 +693,7 @@ def plot_window(data, tickerEnter, fromdateEnter, todateEnter):
 
 
 def support_resistance(data, ticker_name, from_date, to_date):
-    myFrame.config(text="Plot")
+    myFrame.config(text="Support Resistance")
     for child in myFrame.winfo_children():
         child.destroy()
     plt.rcParams['figure.figsize'] = [12, 7]
@@ -772,8 +775,119 @@ def support_resistance(data, ticker_name, from_date, to_date):
 
     plot_all()
 
-# -------------------------------- Support Resistance Window ---------------------------------------
+# ---------------------------------------------------------------------------------------------------------------------------
 
+
+def williams_window(data, ticker_name, from_date, to_date):
+    myFrame.config(text="Williams_window")
+    myFrame.place(relx=0.5, rely=0.5, relwidth=0.9, relheight=0.8, anchor=CENTER)
+    for child in myFrame.winfo_children():
+        child.destroy()
+    
+    plt.rcParams['figure.figsize'] = [12, 7]
+    plt.rc('font', size=14)
+    def get_historical_data(ticker_name, from_date):
+        api_key = '019c9fc7c4a94b279fe9b864b5ce8f7a'
+        api_url = f'https://api.twelvedata.com/time_series?symbol={ticker_name}&interval=1day&outputsize=5000&apikey={api_key}'
+        raw_df = requests.get(api_url).json()
+        df = pd.DataFrame(raw_df['values']).iloc[::-1].set_index('datetime').astype(float)
+        df = df[df.index >= from_date]
+        df.index = pd.to_datetime(df.index)
+        return df
+
+    def get_wr(high, low, close, lookback):
+            highh = high.rolling(lookback).max() 
+            lowl = low.rolling(lookback).min()
+            wr = -100 * ((highh - close) / (highh - lowl))
+            return wr
+
+    ticker = get_historical_data(ticker_name, from_date)
+
+    ticker['wr_14'] = get_wr(ticker['high'], ticker['low'], ticker['close'], 14)
+    ticker = ticker.dropna()
+
+
+    def implement_wr_strategy(prices, wr):    
+        buy_price = []
+        sell_price = []
+        wr_signal = []
+        signal = 0
+
+        for i in range(len(wr)):
+            if wr[i-1] > -80 and wr[i] < -80:
+                if signal != 1:
+                    buy_price.append(prices[i])
+                    sell_price.append(np.nan)
+                    signal = 1
+                    wr_signal.append(signal)
+                else:
+                    buy_price.append(np.nan)
+                    sell_price.append(np.nan)
+                    wr_signal.append(0)
+            elif wr[i-1] < -20 and wr[i] > -20:
+                if signal != -1:
+                    buy_price.append(np.nan)
+                    sell_price.append(prices[i])
+                    signal = -1
+                    wr_signal.append(signal)
+                else:
+                    buy_price.append(np.nan)
+                    sell_price.append(np.nan)
+                    wr_signal.append(0)
+            else:
+                buy_price.append(np.nan)
+                sell_price.append(np.nan)
+                wr_signal.append(0)
+                
+        return buy_price, sell_price, wr_signal
+
+    buy_price, sell_price, wr_signal = implement_wr_strategy(ticker['close'], ticker['wr_14'])
+
+    def plot_all():
+        plt.rc('xtick', labelsize=10) 
+        plt.rc('ytick', labelsize=10) 
+        fig, (ax1,ax2) = plt.subplots(2,1)
+        fig.set_size_inches(7.2, 5)
+        ax1.plot(ticker['close'], linewidth = 2)
+        ax1.plot(ticker.index, buy_price, marker = '^', markersize = 6, linewidth = 0, color = 'green', label = 'BUY SIGNAL')
+        ax1.plot(ticker.index, sell_price, marker = 'v', markersize = 6, linewidth = 0, color = 'r', label = 'SELL SIGNAL')
+        ax1.legend(prop={"size":10})
+        ax1.set_title(ticker_name+' CLOSING PRICE', fontsize = 15)
+        ax2.plot(ticker['wr_14'], color = 'orange', linewidth = 2)
+        ax2.axhline(-20, linewidth = 1.5, linestyle = '--', color = 'grey')
+        ax2.axhline(-80, linewidth = 1.5, linestyle = '--', color = 'grey')
+        ax2.set_title(ticker_name+' WILLIAMS %R 14', fontsize = 15)
+        plt.subplots_adjust(left=0.1,
+                    bottom=0.1, 
+                    right=0.9, 
+                    top=0.9, 
+                    wspace=0.4, 
+                    hspace=0.4)
+
+        canvas = FigureCanvasTkAgg(fig,
+                                   master=myFrame)
+        canvas.draw()
+
+        canvas.get_tk_widget().pack()
+        back = Button(myFrame, text="Back", bg="#3b404e", relief=GROOVE,
+                      borderwidth=2, command=lambda: plot_info_window(root))
+        back.config(highlightbackground="#3b404e",
+                    highlightthickness=2, highlightcolor="#3b404e")
+        back.pack(pady=5)
+
+        indicator1 = Button(myFrame, text="Turn off Indicator", bg="#3b404e", relief=GROOVE,
+                            borderwidth=2, command=lambda: plot_window(data, ticker_name, from_date, to_date))
+        indicator1.config(highlightbackground="#3b404e",
+                          highlightthickness=2, highlightcolor="#3b404e")
+        indicator1.pack(pady=5)
+
+        toolbar = NavigationToolbar2Tk(canvas,
+                                       myFrame)
+        toolbar.update()
+
+        canvas.get_tk_widget().pack()
+
+    plot_all()
 
 
 
