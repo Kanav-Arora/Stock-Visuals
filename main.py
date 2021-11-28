@@ -71,7 +71,7 @@ def home_window(root):
 def stock_index_window(root):
     myFrame.config(text="Stock Index")
     myFrame.place(relx=0.5, rely=0.5, relwidth=0.8, relheight=0.7, anchor=CENTER)
-
+    
     datalist = backend.refresh()
     for child in myFrame.winfo_children():
         child.destroy()
@@ -286,7 +286,7 @@ def crypto_index_window(root):
         search.geometry("{}x{}+{}+{}".format(window_width,
                         window_height, x_cordinate, y_cordinate))
 
-        search.iconbitmap('./DSC logo.ico')
+        #search.iconbitmap('./DSC logo.ico')
 
         search_frame = LabelFrame(search, text="Enter the Company Name")
         search_frame.pack(padx=10, pady=10)

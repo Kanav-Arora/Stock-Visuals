@@ -157,6 +157,8 @@ my_tree.pack()
 
 tree_scroll.config(command=my_tree.yview)
 
+
+
 my_tree['columns'] = ("S.no","Company Name", "Company Symbol")
 
 my_tree.column("#0", width=0, stretch=NO)
