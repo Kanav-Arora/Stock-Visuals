@@ -3,6 +3,7 @@ import requests
 import json, csv, os, test
 from os import name, path
 import datetime
+import yfinance
 
 def filecheck(f):
     if path.exists("./data/"+f)==False:
