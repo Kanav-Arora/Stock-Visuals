@@ -846,19 +846,19 @@ def williams_window(data, ticker_name, from_date, to_date):
     buy_price, sell_price, wr_signal = implement_wr_strategy(ticker['close'], ticker['wr_14'])
 
     def plot_all():
-        plt.rc('xtick', labelsize=10) 
-        plt.rc('ytick', labelsize=10) 
+        plt.rc('xtick', labelsize=9) 
+        plt.rc('ytick', labelsize=9) 
         fig, (ax1,ax2) = plt.subplots(2,1)
-        fig.set_size_inches(7.2, 5)
+        fig.set_size_inches(7.5, 4.8)
         ax1.plot(ticker['close'], linewidth = 2)
-        ax1.plot(ticker.index, buy_price, marker = '^', markersize = 3, linewidth = 0, color = 'green', label = 'BUY SIGNAL')
-        ax1.plot(ticker.index, sell_price, marker = 'v', markersize = 3, linewidth = 0, color = 'r', label = 'SELL SIGNAL')
-        ax1.legend(prop={"size":10})
-        ax1.set_title(ticker_name+' CLOSING PRICE', fontsize = 10)
+        ax1.plot(ticker.index, buy_price, marker = '^', markersize = 4, linewidth = 0, color = 'green', label = 'BUY SIGNAL')
+        ax1.plot(ticker.index, sell_price, marker = 'v', markersize = 4, linewidth = 0, color = 'r', label = 'SELL SIGNAL')
+        ax1.legend(prop={"size":8})
+        ax1.set_title(ticker_name+' CLOSING PRICE', fontsize = 12)
         ax2.plot(ticker['wr_14'], color = 'orange', linewidth = 2)
         ax2.axhline(-20, linewidth = 1.5, linestyle = '--', color = 'grey')
         ax2.axhline(-80, linewidth = 1.5, linestyle = '--', color = 'grey')
-        ax2.set_title(ticker_name+' WILLIAMS %R 14', fontsize = 10)
+        ax2.set_title(ticker_name+' WILLIAMS %R 14', fontsize = 12)
         plt.subplots_adjust(left=0.1,
                     bottom=0.1, 
                     right=0.9, 
