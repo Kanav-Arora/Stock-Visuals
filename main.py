@@ -3,6 +3,7 @@ import tkinter
 from PIL import ImageTk, Image
 from tkinter import ttk
 import backend
+from tkinter import colorchooser
 from tkinter import messagebox
 import webbrowser
 from datetime import datetime
@@ -26,6 +27,8 @@ plt.style.use('fivethirtyeight')
 
 def home_window(root):
     myFrame.config(text="Home Page")
+    myFrame.place(relx=0.5, rely=0.5, relwidth=0.8, relheight=0.7, anchor=CENTER)
+
 
     for child in myFrame.winfo_children():
         child.destroy()
@@ -67,6 +70,8 @@ def home_window(root):
 
 def stock_index_window(root):
     myFrame.config(text="Stock Index")
+    myFrame.place(relx=0.5, rely=0.5, relwidth=0.8, relheight=0.7, anchor=CENTER)
+
     datalist = backend.refresh()
     for child in myFrame.winfo_children():
         child.destroy()
@@ -241,6 +246,8 @@ def stock_index_window(root):
 
 def crypto_index_window(root):
     myFrame.config(text="Crypto Index")
+    myFrame.place(relx=0.5, rely=0.5, relwidth=0.8, relheight=0.7, anchor=CENTER)
+
     datalist = backend.crypto_refresh()
     for child in myFrame.winfo_children():
         child.destroy()
@@ -432,6 +439,8 @@ def stock_details_window(root):
                 title="Invalid Input", message="Date should be of format YYYY-MM-DD")
 
     myFrame.config(text="Stock Details")
+    myFrame.place(relx=0.5, rely=0.5, relwidth=0.8, relheight=0.7, anchor=CENTER)
+
 
     for child in myFrame.winfo_children():
         child.destroy()
@@ -503,6 +512,8 @@ def stock_details_window(root):
 
 def crypto_details_window(root):
     myFrame.config(text="Crypto Details")
+    myFrame.place(relx=0.5, rely=0.5, relwidth=0.8, relheight=0.7, anchor=CENTER)
+
 
     for child in myFrame.winfo_children():
         child.destroy()
@@ -573,6 +584,8 @@ def crypto_details_window(root):
 
 def plot_info_window(root):
     myFrame.config(text="Analysis")
+    myFrame.place(relx=0.5, rely=0.5, relwidth=0.8, relheight=0.7, anchor=CENTER)
+
 
     for child in myFrame.winfo_children():
         child.destroy()
