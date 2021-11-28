@@ -27,7 +27,7 @@ plt.style.use('fivethirtyeight')
 
 def home_window(root):
     myFrame.config(text="Home Page")
-    myFrame.place(relx=0.5, rely=0.5, relwidth=0.8, relheight=0.7, anchor=CENTER)
+    myFrame.place(relx=0.5, rely=0.5, relwidth=0.8, relheight=0.4, anchor=CENTER)
 
 
     for child in myFrame.winfo_children():
@@ -70,7 +70,7 @@ def home_window(root):
 
 def stock_index_window(root):
     myFrame.config(text="Stock Index")
-    myFrame.place(relx=0.5, rely=0.5, relwidth=0.8, relheight=0.7, anchor=CENTER)
+    myFrame.place(relx=0.5, rely=0.5, relwidth=0.8, relheight=0.53, anchor=CENTER)
     
     datalist = backend.refresh()
     for child in myFrame.winfo_children():
@@ -246,7 +246,7 @@ def stock_index_window(root):
 
 def crypto_index_window(root):
     myFrame.config(text="Crypto Index")
-    myFrame.place(relx=0.5, rely=0.5, relwidth=0.8, relheight=0.7, anchor=CENTER)
+    myFrame.place(relx=0.5, rely=0.5, relwidth=0.8, relheight=0.53, anchor=CENTER)
 
     datalist = backend.crypto_refresh()
     for child in myFrame.winfo_children():
@@ -439,7 +439,7 @@ def stock_details_window(root):
                 title="Invalid Input", message="Date should be of format YYYY-MM-DD")
 
     myFrame.config(text="Stock Details")
-    myFrame.place(relx=0.5, rely=0.5, relwidth=0.8, relheight=0.7, anchor=CENTER)
+    myFrame.place(relx=0.5, rely=0.5, relwidth=0.8, relheight=0.57, anchor=CENTER)
 
 
     for child in myFrame.winfo_children():
@@ -512,7 +512,7 @@ def stock_details_window(root):
 
 def crypto_details_window(root):
     myFrame.config(text="Crypto Details")
-    myFrame.place(relx=0.5, rely=0.5, relwidth=0.8, relheight=0.7, anchor=CENTER)
+    myFrame.place(relx=0.5, rely=0.5, relwidth=0.8, relheight=0.5, anchor=CENTER)
 
 
     for child in myFrame.winfo_children():
@@ -584,7 +584,7 @@ def crypto_details_window(root):
 
 def plot_info_window(root):
     myFrame.config(text="Analysis")
-    myFrame.place(relx=0.5, rely=0.5, relwidth=0.8, relheight=0.7, anchor=CENTER)
+    myFrame.place(relx=0.5, rely=0.5, relwidth=0.8, relheight=0.6, anchor=CENTER)
 
 
     for child in myFrame.winfo_children():
@@ -661,11 +661,17 @@ def plot_window(data, tickerEnter, fromdateEnter, todateEnter):
 
         
     def plotter(data1):
-        print(data1)  
-        fig = Figure(figsize=(7.8, 4.3),
-                     dpi=100)
-        plot1 = fig.add_subplot(111)
-        plot1.plot(data1)
+        plt.rc('xtick', labelsize=9) 
+        plt.rc('ytick', labelsize=9) 
+        fig, ax = plt.subplots()
+        fig.set_size_inches(7.8, 4.3)
+        
+        candlestick_ohlc(ax, df.values, width=0.6,
+                         colorup='green', colordown='red', alpha=0.8)
+        date_format = mpl_dates.DateFormatter('%d %b %Y')
+        ax.xaxis.set_major_formatter(date_format)
+        fig.autofmt_xdate()
+        fig.tight_layout()
 
         canvas = FigureCanvasTkAgg(fig,
                                    master=myFrame)
@@ -696,12 +702,13 @@ def plot_window(data, tickerEnter, fromdateEnter, todateEnter):
 
         canvas.get_tk_widget().pack()
 
-    close_vals = []
+    ticker = yfinance.Ticker(tickerEnter)
+    df = ticker.history(interval="1d", start=fromdateEnter, end=todateEnter)
+    df['Date'] = pd.to_datetime(df.index)
+    df['Date'] = df['Date'].apply(mpl_dates.date2num)
+    df = df.loc[:, ['Date', 'Open', 'High', 'Low', 'Close']]
 
-    for i in data["results"]:
-        close_vals.append(i['c'])
-
-    plotter(close_vals)
+    plotter(df)
 
 # -------------------------------- Support Resistance Window ---------------------------------------
 
@@ -715,7 +722,6 @@ def support_resistance(data, ticker_name, from_date, to_date):
     plt.rc('font', size=14)
     ticker = yfinance.Ticker(ticker_name)
     df = ticker.history(interval="1d", start=from_date, end=to_date)
-    print(df)
     df['Date'] = pd.to_datetime(df.index)
     df['Date'] = df['Date'].apply(mpl_dates.date2num)
     df = df.loc[:, ['Date', 'Open', 'High', 'Low', 'Close']]
@@ -755,7 +761,9 @@ def support_resistance(data, ticker_name, from_date, to_date):
 
     def plot_all():
         fig, ax = plt.subplots()
-        fig.set_size_inches(7.8, 4.8)
+        fig.set_size_inches(7.8, 4.7)
+        plt.rc('xtick', labelsize=9) 
+        plt.rc('ytick', labelsize=9) 
         candlestick_ohlc(ax, df.values, width=0.6,
                          colorup='green', colordown='red', alpha=0.8)
         date_format = mpl_dates.DateFormatter('%d %b %Y')
@@ -764,7 +772,7 @@ def support_resistance(data, ticker_name, from_date, to_date):
         fig.tight_layout()
         for level in levels:
             plt.hlines(level[1], xmin=df['Date'][level[0]],
-                       xmax=max(df['Date']), colors='blue')
+                       xmax=max(df['Date']), colors='blue', linewidth = 1)
 
         canvas = FigureCanvasTkAgg(fig,
                                    master=myFrame)
